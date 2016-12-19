@@ -49,14 +49,12 @@ public class Car {
     @OneToMany
     private List<Image> gallery;
 
-
     @Column
     private int nr_seets;
     @Column
     private int door_count;
     @Column
     private String color;
-
     @Column
     private boolean metalic;
     @Column

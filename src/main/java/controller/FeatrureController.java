@@ -12,7 +12,7 @@ public class FeatrureController {
 
     public FeatrureController(String featuresInText) {
         this.featuresInText = featuresInText;
-        cutFeatures();
+        features = cutFeatures();
     }
 
     public ArrayList<String> getFeatures() {
@@ -43,6 +43,7 @@ public class FeatrureController {
                 features) {
             System.out.println(s);
         }
+        System.out.println();
         return features;
     }
 
@@ -58,9 +59,14 @@ public class FeatrureController {
         return s.replace("\"", "");
     }
 
+    /**
+     * Dodaje atrybuty do bazy
+     */
     public void addFeaturesToDataBase() {
-        for (String feature :
-                features) {
+        for (String feature : features) {
+//            entityManager.getTransaction().begin();
+            // entityManager.persist(c);
+//            e/ntityManager.getTransaction().commit();
             System.out.println(feature);
         }
     }

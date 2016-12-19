@@ -1,8 +1,9 @@
+import com.sun.org.apache.xalan.internal.utils.FeatureManager;
 import controller.CarController;
 import controller.FeatrureController;
 import model.Car;
+import model.Features;
 
-import javax.management.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -28,8 +29,8 @@ public class Bocik {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            webPage = getWebPageSource("http://otomoto.pl/oferta/renault-19-12-000-km-nowy-samochod-pierwszy-lakier-od-klasykagatunku-pl-ID6yDf1d.html#bf258e2e11");
-            //webPage = getWebPageSource("http://otomoto.pl/oferta/renault-19-renault-19-1-8-rt-jak-igla-ID6yDsLf.html#bbc011d001");
+            //webPage = getWebPageSource("http://otomoto.pl/oferta/renault-19-12-000-km-nowy-samochod-pierwszy-lakier-od-klasykagatunku-pl-ID6yDf1d.html#bf258e2e11");
+            webPage = getWebPageSource("https://www.otomoto.pl/oferta/renault-19-12-000-km-nowy-samochod-pierwszy-lakier-od-klasykagatunku-pl-ID6yDf1d.html#bf258e2e11");
         } catch (IOException e) {
             System.err.println("zepsuło się");
         }
@@ -39,10 +40,35 @@ public class Bocik {
         HashMap<String, String> info = changeInfoOnMap(information);
         CarController cc = new CarController();
         Car c = cc.initializeCar(info);
-        cc.toString(c);
+        // cc.toString(c);
 
-        FeatrureController fc = new FeatrureController();
-        ArrayList<String> = fc.getFeatures();
+        FeatrureController fc = new FeatrureController(info.get("features"));
+        System.out.println("############################################");
+        System.out.println(info.get("features"));
+        System.out.println("############################################");
+        ArrayList<String> features = fc.getFeatures();//tu jest błąd
+        for (String ss :
+                features) {
+            System.out.println(ss);
+        }
+        long[] arrayOfFeaturesToCar = new long[features.size()];
+        int i = 0;
+        for (String s : features) {
+            Features feature = new Features(s);
+            entityManager.getTransaction().begin();
+            if (!entityManager.contains(feature)) {
+                entityManager.persist(feature);
+            }
+            try {
+                Features f = (Features) entityManager.createQuery("select f from Features f " +
+                        "where f.name_feature like :featureName", Features.class).setParameter("featureName", s);
+                arrayOfFeaturesToCar[i] = f.getId_feature();
+                i++;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            entityManager.getTransaction().commit();
+        }
 
         entityManager.getTransaction().begin();
         // entityManager.persist(c);
@@ -124,6 +150,7 @@ public class Bocik {
     }
 
     private static String[] cutTheSpecification(String s) {
+        System.out.println(s);
         char[] charsSpecification = s.toCharArray();
         int count = 0;
         ArrayList<Integer> indexColon = new ArrayList<Integer>();   //:

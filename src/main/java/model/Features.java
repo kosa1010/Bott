@@ -12,10 +12,13 @@ import javax.persistence.Id;
 public class Features {
     @Id
     @GeneratedValue
-    @Column
     private long id_feature;
-    @Column
-    private String name_Feature;
+    @Column(unique = true)
+    private String name_feature;
+
+    public Features(String name_feature) {
+        this.name_feature = name_feature;
+    }
 
     public long getId_feature() {
         return id_feature;
@@ -25,11 +28,11 @@ public class Features {
         this.id_feature = id_feature;
     }
 
-    public String getName_Feature() {
-        return name_Feature;
+    public String getName_feature() {
+        return name_feature;
     }
 
-    public void setName_Feature(String name_Feature) {
-        this.name_Feature = name_Feature;
+    public void setName_feature(String name_Feature) {
+        this.name_feature = name_Feature;
     }
 }

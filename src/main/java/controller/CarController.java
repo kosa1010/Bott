@@ -9,6 +9,7 @@ import java.util.HashMap;
  */
 public class CarController {
     public Car initializeCar(HashMap<String, String> information) {
+        System.out.println();
         Car car = new Car();
         car.setMake(information.get("make"));
         car.setModel(information.get("model"));
@@ -25,7 +26,7 @@ public class CarController {
         car.setDoor_count(Integer.parseInt(information.get("door_count")));
         car.setColor(information.get("color"));
         car.setPrice_raw(Double.parseDouble(information.get("price_raw")));
-
+        System.out.println();
         FeatrureController fc = new FeatrureController(information.get("features"));
 
         return car;
