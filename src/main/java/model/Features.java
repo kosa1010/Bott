@@ -16,6 +16,9 @@ public class Features {
     @Column(unique = true)
     private String name_feature;
 
+    public Features() {
+    }
+
     public Features(String name_feature) {
         this.name_feature = name_feature;
     }

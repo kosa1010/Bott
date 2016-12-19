@@ -7,6 +7,7 @@ import model.Features;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,6 +16,7 @@ import java.net.URLConnection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -43,14 +45,7 @@ public class Bocik {
         // cc.toString(c);
 
         FeatrureController fc = new FeatrureController(info.get("features"));
-        System.out.println("############################################");
-        System.out.println(info.get("features"));
-        System.out.println("############################################");
-        ArrayList<String> features = fc.getFeatures();//tu jest błąd
-        for (String ss :
-                features) {
-            System.out.println(ss);
-        }
+        ArrayList<String> features = fc.getFeatures();
         long[] arrayOfFeaturesToCar = new long[features.size()];
         int i = 0;
         for (String s : features) {
@@ -60,10 +55,16 @@ public class Bocik {
                 entityManager.persist(feature);
             }
             try {
-                Features f = (Features) entityManager.createQuery("select f from Features f " +
+                TypedQuery tq = entityManager.createQuery("select f from Features f " +
                         "where f.name_feature like :featureName", Features.class).setParameter("featureName", s);
-                arrayOfFeaturesToCar[i] = f.getId_feature();
-                i++;
+                List<Features> featuree = tq.getResultList();
+                if (featuree.isEmpty()){
+                    System.out.println("pusta");
+                }
+                else{
+                   arrayOfFeaturesToCar[i] = featuree.get(0).getId_feature();
+                    i++;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
