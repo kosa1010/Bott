@@ -1,8 +1,8 @@
-import com.sun.org.apache.xalan.internal.utils.FeatureManager;
 import controller.CarController;
 import controller.FeatrureController;
+import controller.ImageController;
 import model.Car;
-import model.Features;
+import model.Feature;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -26,13 +26,15 @@ public class Bocik {
 
     public static void main(String[] args) {
         String webPage = null;
+        String url = null;
         String carDescription;
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("my_app");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
+            url = "https://www.otomoto.pl/oferta/renault-19-12-000-km-nowy-samochod-pierwszy-lakier-od-klasykagatunku-pl-ID6yDf1d.html#bf258e2e11";
             //webPage = getWebPageSource("http://otomoto.pl/oferta/renault-19-12-000-km-nowy-samochod-pierwszy-lakier-od-klasykagatunku-pl-ID6yDf1d.html#bf258e2e11");
-            webPage = getWebPageSource("https://www.otomoto.pl/oferta/renault-19-12-000-km-nowy-samochod-pierwszy-lakier-od-klasykagatunku-pl-ID6yDf1d.html#bf258e2e11");
+            webPage = getWebPageSource(url);
         } catch (IOException e) {
             System.err.println("zepsuło się");
         }
@@ -42,37 +44,22 @@ public class Bocik {
         HashMap<String, String> info = changeInfoOnMap(information);
         CarController cc = new CarController();
         Car c = cc.initializeCar(info);
-        // cc.toString(c);
 
         FeatrureController fc = new FeatrureController(info.get("features"));
         ArrayList<String> features = fc.getFeatures();
-        long[] arrayOfFeaturesToCar = new long[features.size()];
-        int i = 0;
-        for (String s : features) {
-            Features feature = new Features(s);
-            entityManager.getTransaction().begin();
-            if (!entityManager.contains(feature)) {
-                entityManager.persist(feature);
-            }
-            try {
-                TypedQuery tq = entityManager.createQuery("select f from Features f " +
-                        "where f.name_feature like :featureName", Features.class).setParameter("featureName", s);
-                List<Features> featuree = tq.getResultList();
-                if (featuree.isEmpty()){
-                    System.out.println("pusta");
-                }
-                else{
-                   arrayOfFeaturesToCar[i] = featuree.get(0).getId_feature();
-                    i++;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            entityManager.getTransaction().commit();
+
+        ImageController ic = new ImageController(webPage, url);
+        try {
+            ic.getImageLinks();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
+
+        //getFeatureList(entityManager,features);
+        c.setFeatures(getFeatureList(entityManager, features));
         entityManager.getTransaction().begin();
-        // entityManager.persist(c);
+        entityManager.persist(c);
         entityManager.getTransaction().commit();
 
         entityManager.close();
@@ -80,7 +67,7 @@ public class Bocik {
     }
 
     /**
-     * buduje string z zakresu od podanego indexu do drugiego podanego indexu
+     * Buduje string z zakresu od podanego indexu do drugiego podanego indexu
      *
      * @param source
      * @param begin
@@ -213,6 +200,38 @@ public class Bocik {
 
         }
         return info;
+    }
+
+    /**
+     * Zwraca listę obiektów wyposarzenia samochodu
+     *
+     * @param entityManager
+     * @param features
+     * @return
+     */
+    private static List<Feature> getFeatureList(EntityManager entityManager, List<String> features) {
+        List<Feature> carFeatures = new ArrayList();
+        for (String s : features) {
+            Feature feature = new Feature(s);
+            if (!entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().begin();
+            }
+            try {
+                TypedQuery tq = entityManager.createQuery("select f from Feature f " +
+                        "where f.name_feature like :featureName", Feature.class).setParameter("featureName", s);
+                List<Feature> featuree = tq.getResultList();
+                if (featuree.isEmpty()) {
+                    entityManager.persist(feature);
+                    carFeatures.add(feature);
+                } else {
+                    carFeatures.add(featuree.get(0));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            entityManager.getTransaction().commit();
+        }
+        return carFeatures;
     }
 }
 
