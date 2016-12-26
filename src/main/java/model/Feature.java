@@ -9,17 +9,17 @@ import javax.persistence.Id;
  * Created by kosa1010 on 26.11.16.
  */
 @Entity
-public class Features {
+public class Feature {
     @Id
     @GeneratedValue
     private long id_feature;
     @Column(unique = true)
     private String name_feature;
 
-    public Features() {
+    public Feature() {
     }
 
-    public Features(String name_feature) {
+    public Feature(String name_feature) {
         this.name_feature = name_feature;
     }
 

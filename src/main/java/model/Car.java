@@ -11,65 +11,36 @@ import java.util.List;
 public class Car {
     @Id
     @GeneratedValue
-    @Column
     private long id_car;
-    @Column
     private String category;
-    @Column
     private String make;
-    @Column
     private String model;
-    @Column
     private String version;
-    @Column
     private double price_raw;
-    @Column
     private int year;
-    @Column
     private int milage;
-    @Column
     private int engine_copacity;
-    @Column
     private String fuel_type;
-    @Column
     private int engine_power;
-    @Column
     private String gearbox;
-    @Column
     private String body_type;
-    @Column
     private String driving_gear;
-    @Column
     private String car_description;
-    @Column
     @OneToMany
 //    @JoinColumn(name = "car_features")
-    private List<Features> features;
-    @Column
+    private List<Feature> features;
     @OneToMany
     private List<Image> gallery;
-
-    @Column
     private int nr_seets;
-    @Column
     private int door_count;
-    @Column
     private String color;
-    @Column
     private boolean metalic;
-    @Column
     private String contry_of_origin;
-    @Column
     private Date date_of_first_register;
-    @Column
     private boolean register_in_polish;
-    @Column
     private boolean first_ovner;
-    @Column
     private boolean accidents;
-    @Column
     private boolean services_in_ASO;
-    @Column
     private boolean used;
 
 
@@ -193,11 +164,11 @@ public class Car {
         this.car_description = car_description;
     }
 
-    public List<Features> getFeatures() {
+    public List<Feature> getFeatures() {
         return features;
     }
 
-    public void setFeatures(List<Features> features) {
+    public void setFeatures(List<Feature> features) {
         this.features = features;
     }
 

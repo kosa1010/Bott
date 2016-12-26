@@ -44,5 +44,6 @@
     <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax:javaee-api:6.0" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:6.0.4" level="project" />
+    <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.10.1" level="project" />
   </component>
 </module>

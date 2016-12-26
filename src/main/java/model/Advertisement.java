@@ -12,11 +12,8 @@ public class Advertisement {
     long id_ad;
     @OneToOne
     Car car;
-    @Column
     String description;
-    @Column
-    boolean status;
-    @Column
+    boolean status = false;
     String title;
 
     public Advertisement(long id_ad, Car car, String description, boolean status, String title) {

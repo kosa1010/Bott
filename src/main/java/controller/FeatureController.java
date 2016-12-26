@@ -5,12 +5,12 @@ import java.util.ArrayList;
 /**
  * Created by kosa1010 on 11.12.16.
  */
-public class FeatrureController {
+public class FeatureController {
 
     String featuresInText;
     ArrayList<String> features;
 
-    public FeatrureController(String featuresInText) {
+    public FeatureController(String featuresInText) {
         this.featuresInText = featuresInText;
         features = cutFeatures();
     }
@@ -20,7 +20,7 @@ public class FeatrureController {
     }
 
     /**
-     * metoda tnie łańcuch znaków na aby rozdzielić poszczególne elementy wyposarzenia
+     * Metoda tnie łańcuch znaków aby rozdzielić poszczególne elementy wyposarzenia
      *
      * @return
      */
@@ -39,11 +39,6 @@ public class FeatrureController {
             index = indexComma.get(i) + 1;
         }
         features.add(clearFeature(featuresInText.substring(index)));
-        for (String s :
-                features) {
-            System.out.println(s);
-        }
-        System.out.println();
         return features;
     }
 
@@ -59,15 +54,4 @@ public class FeatrureController {
         return s.replace("\"", "");
     }
 
-    /**
-     * Dodaje atrybuty do bazy
-     */
-    public void addFeaturesToDataBase() {
-        for (String feature : features) {
-//            entityManager.getTransaction().begin();
-            // entityManager.persist(c);
-//            e/ntityManager.getTransaction().commit();
-            System.out.println(feature);
-        }
     }
-}

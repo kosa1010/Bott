@@ -9,9 +9,7 @@ import javax.persistence.*;
 public class Image {
     @Id
     @GeneratedValue
-    @Column
     private long id_image;
-    @Column
     @Lob
     private byte[] image;
 

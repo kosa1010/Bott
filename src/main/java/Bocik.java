@@ -1,8 +1,9 @@
 import controller.CarController;
-import controller.FeatrureController;
+import controller.FeatureController;
 import controller.ImageController;
 import model.Car;
 import model.Feature;
+import model.Image;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -45,18 +46,10 @@ public class Bocik {
         CarController cc = new CarController();
         Car c = cc.initializeCar(info);
 
-        FeatrureController fc = new FeatrureController(info.get("features"));
+        FeatureController fc = new FeatureController(info.get("features"));
         ArrayList<String> features = fc.getFeatures();
 
-        ImageController ic = new ImageController(webPage, url);
-        try {
-            ic.getImageLinks();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        //getFeatureList(entityManager,features);
+        c.setGallery(downloadGallery(entityManager, url, webPage));
         c.setFeatures(getFeatureList(entityManager, features));
         entityManager.getTransaction().begin();
         entityManager.persist(c);
@@ -64,6 +57,34 @@ public class Bocik {
 
         entityManager.close();
         entityManagerFactory.close();
+    }
+
+    /**
+     * Metoda tworzy galerię zdjęć auta
+     *
+     * @param em
+     * @param url
+     * @param webPage
+     * @return
+     */
+    public static ArrayList<Image> downloadGallery(EntityManager em, String url, String webPage) {
+        ImageController ic = new ImageController(webPage, url);
+        ArrayList<Image> gallery = null;
+        try {
+            ArrayList<String> imgList = ic.getImageLinks();
+            gallery = new ArrayList<Image>();
+            for (int i = 0; i < imgList.size(); i++) {
+                Image img = new Image();
+                img.setImage(ic.getImageAsByteArray(imgList.get(i)));
+                em.getTransaction().begin();
+                em.persist(img);
+                em.getTransaction().commit();
+                gallery.add(img);
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        return gallery;
     }
 
     /**
@@ -197,7 +218,6 @@ public class Bocik {
                 value = s[i].substring(indexchar + 2, indexcharEnd + 2);
                 info.put(key, value);
             }
-
         }
         return info;
     }
