@@ -1,6 +1,9 @@
 package controller;
 
 import model.Feature;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -89,5 +92,40 @@ public class FeatureController {
             entityManager.getTransaction().commit();
         }
         return carFeatures;
+    }
+
+
+    /**
+     * Zwraca listę obiektów wyposarzenia samochodu
+     *
+     * @param entityManager
+     * @param document
+     * @return
+     */
+    public List<Feature> getFeaturesList(EntityManager entityManager, Document document) {
+        List<Feature> features = new ArrayList();
+        Elements all = document.getElementsByClass("offer-features__item");
+
+        for (Element element : all) {
+            Feature feature = new Feature(element.text());
+            if (!entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().begin();
+            }
+            try {
+                TypedQuery tq = entityManager.createQuery("select f from Feature f " +
+                        "where f.name_feature like :featureName", Feature.class).setParameter("featureName", element.text());
+                List<Feature> carFeature = tq.getResultList();
+                if (carFeature.isEmpty()) {
+                    entityManager.persist(feature);
+                    features.add(feature);
+                } else {
+                    features.add(carFeature.get(0));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            entityManager.getTransaction().commit();
+        }
+        return features;
     }
 }
