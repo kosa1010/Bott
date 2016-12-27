@@ -18,6 +18,9 @@ public class FeatureController {
     String featuresInText;
     ArrayList<String> features;
 
+    public FeatureController() {
+    }
+
     public FeatureController(String featuresInText) {
         this.featuresInText = featuresInText;
         features = cutFeatures();
