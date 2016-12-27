@@ -2,6 +2,7 @@ package controller;
 
 import model.Car;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.HashMap;
@@ -21,7 +22,7 @@ public class CarController {
         car.setFuel_type(information.get("fuel_type"));
         car.setEngine_power(Integer.parseInt(information.get("engine_power")));
         car.setGearbox(information.get("gearbox"));
-        car.setDriving_gear(information.get("transmission"));
+        car.setTransmission(information.get("transmission"));
         car.setBody_type(information.get("body_type"));
         car.setNr_seats(Integer.parseInt(information.get("nr_seats")));
         car.setDoor_count(Integer.parseInt(information.get("door_count")));
@@ -40,7 +41,7 @@ public class CarController {
         System.out.println(c.getFuel_type());
         System.out.println(c.getEngine_power());
         System.out.println(c.getGearbox());
-        System.out.println(c.getDriving_gear());
+        System.out.println(c.getTransmission());
         System.out.println(c.getBody_type());
         System.out.println(c.getNr_seats());
         System.out.println(c.getDoor_count());
@@ -56,45 +57,66 @@ public class CarController {
      * @return
      */
     public Car getCar(Document document) {
-        Elements all = document.getElementsByClass("offer-params__value");
+        HashMap<String, String> paramsList = new HashMap();
+        Elements all = document.getElementsByClass("offer-params__list").select("li");
+        String key, value;
+        for (Element e : all) {
+            key = e.getElementsByClass("offer-params__label").text();
+            value = e.getElementsByClass("offer-params__value").text();
+            System.out.print(key + "\t\t\t");
+            System.out.println(value);
+            paramsList.put(key, value);
+        }
 
         boolean bufor;
         Car car = new Car();
-        car.setCategory(all.get(1).text());
-        car.setMake(all.get(2).text());
-        car.setModel(all.get(3).text());
-        car.setVersion(all.get(4).text());
-        car.setYear(Integer.parseInt(all.get(5).text()));
-        car.setMillage(delLetter(all.get(6).text()));
-        car.setEngine_capacity((delLetter(all.get(7).text()) / 10));
-        car.setFuel_type(all.get(8).text());
-        car.setEngine_power(delLetter(all.get(9).text()));
-        car.setGearbox(all.get(10).text());
-        car.setDriving_gear(all.get(11).text());
-        car.setBody_type(all.get(12).text());
-        car.setNr_seats(Integer.parseInt(all.get(13).text()));
-        car.setDoor_count(Integer.parseInt(all.get(14).text()));
-        car.setColor(all.get(15).text());
-        if (all.get(16).text().contains("Nie")) {
-            bufor = true;
-        } else {
-            bufor = false;
+        car.setCategory(paramsList.get("Kategoria"));//all.get(1).text());
+        car.setMake(paramsList.get("Marka"));//all.get(2).text());
+        if (paramsList.containsKey("Model"))
+            car.setModel(paramsList.get("Model"));
+        if (paramsList.containsKey("Wersja"))
+            car.setVersion(paramsList.get("Wersja"));
+        car.setYear(Integer.parseInt(paramsList.get("Rok produkcji")));
+        car.setMillage(delLetter(paramsList.get("Przebieg")));
+        car.setEngine_capacity((delLetter(paramsList.get("Pojemność skokowa")) / 10));
+        car.setFuel_type(paramsList.get("Rodzaj paliwa"));
+        if (paramsList.containsKey("Moc silnika"))
+            car.setEngine_power(delLetter(paramsList.get("Moc silnika")));
+        car.setGearbox(paramsList.get("Skrzynia biagów"));
+        if (paramsList.containsKey("Napęd"))
+            car.setTransmission(paramsList.get("Napęd"));
+        if (paramsList.containsKey("Typ"))
+            car.setBody_type(paramsList.get("Typ"));
+        car.setNr_seats(Integer.parseInt(paramsList.get("Liczba miejsc")));
+        car.setDoor_count(Integer.parseInt(paramsList.get("Liczba drzwi")));
+        car.setColor(paramsList.get("Kolor"));
+        if (paramsList.containsKey("Metalik")) {
+            if (paramsList.get("Metalik").contains("Tak")) {
+                bufor = true;
+            } else {
+                bufor = false;
+            }
+            car.setMetalic(bufor);
         }
-        car.setMetalic(bufor);
-        car.setCountry_of_origin(all.get(17).text());
-        if (all.get(19).text().contains("Tak")) {
-            bufor = true;
-        } else {
-            bufor = false;
+        if (paramsList.containsKey("Kraj pochodzenia"))
+            car.setCountry_of_origin(paramsList.get("Kraj pochodzenia"));
+        if (paramsList.containsKey("Bezwypadkowy")) {
+            if (paramsList.get("Bezwypadkowy").contains("Tak")) {
+                bufor = true;
+            } else {
+                bufor = false;
+            }
+            car.setNoAccidents(bufor);
         }
-        car.setNoAccidents(bufor);
-        if (all.get(20).text().contains("Tak")) {
-            bufor = true;
-        } else {
-            bufor = false;
+        if (paramsList.containsKey("Serwisowany w ASO")) {
+            if (paramsList.get("Serwisowany w ASO").contains("Tak")) {
+                bufor = true;
+            } else {
+                bufor = false;
+            }
+            car.setServices_in_ASO(bufor);
         }
-        car.setServices_in_ASO(bufor);
-        if (all.get(21).text().contains("Używane")) {
+        if (paramsList.get("Stan").contains("Używane")) {
             bufor = true;
         } else {
             bufor = false;
