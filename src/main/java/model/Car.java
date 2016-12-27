@@ -18,8 +18,8 @@ public class Car {
     private String version;
     private double price_raw;
     private int year;
-    private int milage;
-    private int engine_copacity;
+    private int millage;
+    private int engine_capacity;
     private String fuel_type;
     private int engine_power;
     private String gearbox;
@@ -37,7 +37,7 @@ public class Car {
     private Date date_of_first_register;
     private boolean register_in_polish;
     private boolean first_owner;
-    private boolean accidents;
+    private boolean noAccidents;
     private boolean services_in_ASO;
     private boolean used;
 
@@ -98,20 +98,20 @@ public class Car {
         this.year = year_production;
     }
 
-    public int getMilage() {
-        return milage;
+    public int getMillage() {
+        return millage;
     }
 
-    public void setMilage(int distance) {
-        this.milage = distance;
+    public void setMillage(int distance) {
+        this.millage = distance;
     }
 
-    public int getEngine_copacity() {
-        return engine_copacity;
+    public int getEngine_capacity() {
+        return engine_capacity;
     }
 
-    public void setEngine_copacity(int copacity) {
-        this.engine_copacity = copacity;
+    public void setEngine_capacity(int copacity) {
+        this.engine_capacity = copacity;
     }
 
     public String getFuel_type() {
@@ -226,12 +226,12 @@ public class Car {
         this.first_owner = first_ovner;
     }
 
-    public boolean isAccidents() {
-        return accidents;
+    public boolean isNoAccidents() {
+        return noAccidents;
     }
 
-    public void setAccidents(boolean accidents) {
-        this.accidents = accidents;
+    public void setNoAccidents(boolean accidents) {
+        this.noAccidents = accidents;
     }
 
     public boolean isServices_in_ASO() {
