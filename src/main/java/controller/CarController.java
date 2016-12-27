@@ -1,13 +1,9 @@
 package controller;
 
 import model.Car;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -20,8 +16,8 @@ public class CarController {
         car.setModel(information.get("model"));
         car.setVersion(information.get("version"));
         car.setYear(Integer.parseInt(information.get("year")));
-        car.setMilage(Integer.parseInt(information.get("mileage")));
-        car.setEngine_copacity(Integer.parseInt(information.get("engine_capacity")));
+        car.setMillage(Integer.parseInt(information.get("mileage")));
+        car.setEngine_capacity(Integer.parseInt(information.get("engine_capacity")));
         car.setFuel_type(information.get("fuel_type"));
         car.setEngine_power(Integer.parseInt(information.get("engine_power")));
         car.setGearbox(information.get("gearbox"));
@@ -39,8 +35,8 @@ public class CarController {
         System.out.println(c.getModel());
         System.out.println(c.getVersion());
         System.out.println(c.getYear());
-        System.out.println(c.getMilage());
-        System.out.println(c.getEngine_copacity());
+        System.out.println(c.getMillage());
+        System.out.println(c.getEngine_capacity());
         System.out.println(c.getFuel_type());
         System.out.println(c.getEngine_power());
         System.out.println(c.getGearbox());
@@ -53,45 +49,71 @@ public class CarController {
 
     }
 
-    public Car getCar(String url) throws IOException {
-        Connection connect = Jsoup.connect(url).timeout(10 * 1000);
-        Document document = connect.get();
+    /**
+     * Metoda pobiera informacje o samochodzie
+     *
+     * @param document
+     * @return
+     */
+    public Car getCar(Document document) {
         Elements all = document.getElementsByClass("offer-params__value");
 
-        System.out.println(all.size());
-        for (Element e : all) {
-            System.out.println(e.text());
+        boolean bufor;
+        Car car = new Car();
+        car.setCategory(all.get(1).text());
+        car.setMake(all.get(2).text());
+        car.setModel(all.get(3).text());
+        car.setVersion(all.get(4).text());
+        car.setYear(Integer.parseInt(all.get(5).text()));
+        car.setMillage(delLetter(all.get(6).text()));
+        car.setEngine_capacity((delLetter(all.get(7).text()) / 10));
+        car.setFuel_type(all.get(8).text());
+        car.setEngine_power(delLetter(all.get(9).text()));
+        car.setGearbox(all.get(10).text());
+        car.setDriving_gear(all.get(11).text());
+        car.setBody_type(all.get(12).text());
+        car.setNr_seats(Integer.parseInt(all.get(13).text()));
+        car.setDoor_count(Integer.parseInt(all.get(14).text()));
+        car.setColor(all.get(15).text());
+        if (all.get(16).text().contains("Nie")) {
+            bufor = true;
+        } else {
+            bufor = false;
         }
-//        System.out.println(all.get(0).getElementsByClass("offer-params__value").text());
-//        System.out.println(all.get(1).getElementsByClass("offer-params__value").text());
-//        System.out.println(all.get(2).getElementsByClass("offer-params__value").text());
-//        System.out.println(all.get(3).getElementsByClass("offer-params__value").text());
-//        System.out.println(all.get(4).getElementsByClass("offer-params__value").text());
-//        System.out.println(all.get(5).getElementsByClass("offer-params__value").text());
-//        System.out.println(all.get(6).getElementsByClass("offer-params__value").text());
+        car.setMetalic(bufor);
+        car.setCountry_of_origin(all.get(17).text());
+        if (all.get(19).text().contains("Tak")) {
+            bufor = true;
+        } else {
+            bufor = false;
+        }
+        car.setNoAccidents(bufor);
+        if (all.get(20).text().contains("Tak")) {
+            bufor = true;
+        } else {
+            bufor = false;
+        }
+        car.setServices_in_ASO(bufor);
+        if (all.get(21).text().contains("Używane")) {
+            bufor = true;
+        } else {
+            bufor = false;
+        }
+        car.setUsed(bufor);
+        String price = document.getElementsByClass("offer-price__number").get(0).text();
+        car.setPrice_raw(Double.parseDouble(String.valueOf(delLetter(price))));
+        return car;
+    }
 
-
-//        System.out.println(all.get(0).getElementsByClass("offer-params__value").select("a").get(1).text());
-//
-//        System.out.println(all.get(0).getElementsByClass("offer-params__value").select("a").get(11).text());
-//        System.out.println(all.get(0).getElementsByClass("offer-params__value").select("a").get(12).text());
-//        System.out.println(all.get(0).getElementsByClass("offer-params__value").select("a").get(13).text());
-//        System.out.println(all.get(0).getElementsByClass("offer-params__value").select("a").get(14).text());
-        //.select("ul").get(0).select("li").get(1).html());//text());
-//        System.out.println(all.get(0).getElementsByClass("offer-params__list").select("ul").get(0).select("li").get(2).text());
-
-//x        bezwypadkowy
-//x        używany
-//        metalik
-//        pierwszy właściciel
-//        zarejestrowany w polsce
-//x        serwisowany w aso
-//
-//x        kategoria
-//x        kraj pochodzenia
-//        data pierwszej rejestracji
-
-
-        return null;
+    private static int delLetter(String s) {
+        String buf = "";
+        char[] array = s.toCharArray();
+        for (char c :
+                array) {
+            if (Character.isDigit(c)) {
+                buf += c;
+            }
+        }
+        return Integer.parseInt(buf);
     }
 }
