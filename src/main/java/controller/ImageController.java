@@ -1,8 +1,6 @@
 package controller;
 
 import model.Image;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
@@ -20,16 +18,10 @@ import java.util.ArrayList;
  */
 public class ImageController {
     private String pageSource;
-    private static String urlImage;
-    private static ArrayList<String> imageLinks = new ArrayList<String>();;
+    private static ArrayList<String> imageLinks = new ArrayList<String>();
 
-    public ImageController(String url) {
-        urlImage = url;
-    }
-
-    public ImageController(String pageSource, String url) {
+    public ImageController(String pageSource) {
         this.pageSource = pageSource;
-        urlImage = url;
     }
 
     public String getPageSource() {
@@ -40,10 +32,7 @@ public class ImageController {
         this.pageSource = pageSource;
     }
 
-    public static ArrayList<String> getImageLinks() throws IOException {
-       // imageLinks = new ArrayList<String>();
-        Connection connect = Jsoup.connect(urlImage).timeout(10 * 1000);
-        Document document = connect.get();
+    public static ArrayList<String> getImageLinks(Document document) {
         Elements all = document.getElementsByClass("om-offer-photos om-offer-photos-slick");
         for (int i = 0; i < 8; i++) {
             if (all.get(0).getElementsByClass("bigImage").attr("data-nr") != null)
@@ -54,6 +43,7 @@ public class ImageController {
 
     /**
      * Metoda pobiera obrazek ze strony i zamienia na tablicę bajtów
+     *
      * @param url
      * @return
      * @throws MalformedURLException
@@ -80,11 +70,11 @@ public class ImageController {
      * @param em
      * @return
      */
-    public static ArrayList<Image> downloadGallery(EntityManager em) {
+    public static ArrayList<Image> downloadGallery(EntityManager em, Document document) {
 
         ArrayList<Image> gallery = null;
         try {
-            ArrayList<String> imgList = getImageLinks();
+            ArrayList<String> imgList = getImageLinks(document);
             gallery = new ArrayList<Image>();
             for (int i = 0; i < imgList.size(); i++) {
                 Image img = new Image();
