@@ -24,7 +24,7 @@ public class Car {
     private int engine_power;
     private String gearbox;
     private String body_type;
-    private String driving_gear;
+    private String transmission;
     @ManyToMany
     private List<Feature> features;
     @OneToMany
@@ -146,12 +146,12 @@ public class Car {
         this.body_type = body_type;
     }
 
-    public String getDriving_gear() {
-        return driving_gear;
+    public String getTransmission() {
+        return transmission;
     }
 
-    public void setDriving_gear(String driving_gear) {
-        this.driving_gear = driving_gear;
+    public void setTransmission(String driving_gear) {
+        this.transmission = driving_gear;
     }
 
     public List<Feature> getFeatures() {
