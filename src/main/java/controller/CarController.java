@@ -1,7 +1,13 @@
 package controller;
 
 import model.Car;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -21,12 +27,10 @@ public class CarController {
         car.setGearbox(information.get("gearbox"));
         car.setDriving_gear(information.get("transmission"));
         car.setBody_type(information.get("body_type"));
-        car.setNr_seets(Integer.parseInt(information.get("nr_seats")));
+        car.setNr_seats(Integer.parseInt(information.get("nr_seats")));
         car.setDoor_count(Integer.parseInt(information.get("door_count")));
         car.setColor(information.get("color"));
         car.setPrice_raw(Double.parseDouble(information.get("price_raw")));
-        FeatureController fc = new FeatureController(information.get("features"));
-
         return car;
     }
 
@@ -42,11 +46,52 @@ public class CarController {
         System.out.println(c.getGearbox());
         System.out.println(c.getDriving_gear());
         System.out.println(c.getBody_type());
-        System.out.println(c.getNr_seets());
+        System.out.println(c.getNr_seats());
         System.out.println(c.getDoor_count());
         System.out.println(c.getColor());
         System.out.println(c.getPrice_raw());
 
     }
 
+    public Car getCar(String url) throws IOException {
+        Connection connect = Jsoup.connect(url).timeout(10 * 1000);
+        Document document = connect.get();
+        Elements all = document.getElementsByClass("offer-params__value");
+
+        System.out.println(all.size());
+        for (Element e : all) {
+            System.out.println(e.text());
+        }
+//        System.out.println(all.get(0).getElementsByClass("offer-params__value").text());
+//        System.out.println(all.get(1).getElementsByClass("offer-params__value").text());
+//        System.out.println(all.get(2).getElementsByClass("offer-params__value").text());
+//        System.out.println(all.get(3).getElementsByClass("offer-params__value").text());
+//        System.out.println(all.get(4).getElementsByClass("offer-params__value").text());
+//        System.out.println(all.get(5).getElementsByClass("offer-params__value").text());
+//        System.out.println(all.get(6).getElementsByClass("offer-params__value").text());
+
+
+//        System.out.println(all.get(0).getElementsByClass("offer-params__value").select("a").get(1).text());
+//
+//        System.out.println(all.get(0).getElementsByClass("offer-params__value").select("a").get(11).text());
+//        System.out.println(all.get(0).getElementsByClass("offer-params__value").select("a").get(12).text());
+//        System.out.println(all.get(0).getElementsByClass("offer-params__value").select("a").get(13).text());
+//        System.out.println(all.get(0).getElementsByClass("offer-params__value").select("a").get(14).text());
+        //.select("ul").get(0).select("li").get(1).html());//text());
+//        System.out.println(all.get(0).getElementsByClass("offer-params__list").select("ul").get(0).select("li").get(2).text());
+
+//x        bezwypadkowy
+//x        używany
+//        metalik
+//        pierwszy właściciel
+//        zarejestrowany w polsce
+//x        serwisowany w aso
+//
+//x        kategoria
+//x        kraj pochodzenia
+//        data pierwszej rejestracji
+
+
+        return null;
+    }
 }

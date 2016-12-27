@@ -1,14 +1,13 @@
+import controller.AdvertisementController;
 import controller.CarController;
 import controller.FeatureController;
 import controller.ImageController;
+import model.Advertisement;
 import model.Car;
-import model.Feature;
-import model.Image;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,7 +16,6 @@ import java.net.URLConnection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -33,6 +31,7 @@ public class Bocik {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
+//            url = "https://www.otomoto.pl/oferta/alfa-romeo-giulietta-quadrifoglio-verde-235km-perfekcyjny-stan-bose-bilstein-q2-ID6yE343.html#fac044b1a9";
             url = "https://www.otomoto.pl/oferta/renault-19-12-000-km-nowy-samochod-pierwszy-lakier-od-klasykagatunku-pl-ID6yDf1d.html#bf258e2e11";
             //webPage = getWebPageSource("http://otomoto.pl/oferta/renault-19-12-000-km-nowy-samochod-pierwszy-lakier-od-klasykagatunku-pl-ID6yDf1d.html#bf258e2e11");
             webPage = getWebPageSource(url);
@@ -44,47 +43,39 @@ public class Bocik {
 
         HashMap<String, String> info = changeInfoOnMap(information);
         CarController cc = new CarController();
+        try {
+            cc.getCar(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Car c = cc.initializeCar(info);
 
         FeatureController fc = new FeatureController(info.get("features"));
         ArrayList<String> features = fc.getFeatures();
 
-        c.setGallery(downloadGallery(entityManager, url, webPage));
-        c.setFeatures(getFeatureList(entityManager, features));
+        ImageController ic = new ImageController(webPage, url);
+
+        //c.setGallery(ic.downloadGallery(entityManager));
+        c.setFeatures(fc.getFeatureList(entityManager, features));
         entityManager.getTransaction().begin();
         entityManager.persist(c);
         entityManager.getTransaction().commit();
 
+        AdvertisementController ac = new AdvertisementController(webPage, url);
+        String description = "";
+        try {
+            description = ac.getDescription();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Advertisement adv = new Advertisement(c, description, false, info.get("title"));
+        entityManager.getTransaction().begin();
+        entityManager.persist(adv);
+        entityManager.getTransaction().commit();
+
         entityManager.close();
         entityManagerFactory.close();
-    }
-
-    /**
-     * Metoda tworzy galerię zdjęć auta
-     *
-     * @param em
-     * @param url
-     * @param webPage
-     * @return
-     */
-    public static ArrayList<Image> downloadGallery(EntityManager em, String url, String webPage) {
-        ImageController ic = new ImageController(webPage, url);
-        ArrayList<Image> gallery = null;
-        try {
-            ArrayList<String> imgList = ic.getImageLinks();
-            gallery = new ArrayList<Image>();
-            for (int i = 0; i < imgList.size(); i++) {
-                Image img = new Image();
-                img.setImage(ic.getImageAsByteArray(imgList.get(i)));
-                em.getTransaction().begin();
-                em.persist(img);
-                em.getTransaction().commit();
-                gallery.add(img);
-            }
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        return gallery;
     }
 
     /**
@@ -222,37 +213,6 @@ public class Bocik {
         return info;
     }
 
-    /**
-     * Zwraca listę obiektów wyposarzenia samochodu
-     *
-     * @param entityManager
-     * @param features
-     * @return
-     */
-    private static List<Feature> getFeatureList(EntityManager entityManager, List<String> features) {
-        List<Feature> carFeatures = new ArrayList();
-        for (String s : features) {
-            Feature feature = new Feature(s);
-            if (!entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().begin();
-            }
-            try {
-                TypedQuery tq = entityManager.createQuery("select f from Feature f " +
-                        "where f.name_feature like :featureName", Feature.class).setParameter("featureName", s);
-                List<Feature> featuree = tq.getResultList();
-                if (featuree.isEmpty()) {
-                    entityManager.persist(feature);
-                    carFeatures.add(feature);
-                } else {
-                    carFeatures.add(featuree.get(0));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            entityManager.getTransaction().commit();
-        }
-        return carFeatures;
-    }
 }
 
 

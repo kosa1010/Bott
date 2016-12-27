@@ -25,20 +25,18 @@ public class Car {
     private String gearbox;
     private String body_type;
     private String driving_gear;
-    private String car_description;
-    @OneToMany
-//    @JoinColumn(name = "car_features")
+    @ManyToMany
     private List<Feature> features;
     @OneToMany
     private List<Image> gallery;
-    private int nr_seets;
+    private int nr_seats;
     private int door_count;
     private String color;
     private boolean metalic;
-    private String contry_of_origin;
+    private String country_of_origin;
     private Date date_of_first_register;
     private boolean register_in_polish;
-    private boolean first_ovner;
+    private boolean first_owner;
     private boolean accidents;
     private boolean services_in_ASO;
     private boolean used;
@@ -156,14 +154,6 @@ public class Car {
         this.driving_gear = driving_gear;
     }
 
-    public String getCar_description() {
-        return car_description;
-    }
-
-    public void setCar_description(String car_description) {
-        this.car_description = car_description;
-    }
-
     public List<Feature> getFeatures() {
         return features;
     }
@@ -172,12 +162,12 @@ public class Car {
         this.features = features;
     }
 
-    public int getNr_seets() {
-        return nr_seets;
+    public int getNr_seats() {
+        return nr_seats;
     }
 
-    public void setNr_seets(int num_seets) {
-        this.nr_seets = num_seets;
+    public void setNr_seats(int num_seets) {
+        this.nr_seats = num_seets;
     }
 
     public int getDoor_count() {
@@ -204,12 +194,12 @@ public class Car {
         this.metalic = metalic;
     }
 
-    public String getContry_of_origin() {
-        return contry_of_origin;
+    public String getCountry_of_origin() {
+        return country_of_origin;
     }
 
-    public void setContry_of_origin(String contry_of_origin) {
-        this.contry_of_origin = contry_of_origin;
+    public void setCountry_of_origin(String contry_of_origin) {
+        this.country_of_origin = contry_of_origin;
     }
 
     public Date getDate_of_first_register() {
@@ -228,12 +218,12 @@ public class Car {
         this.register_in_polish = register_in_polish;
     }
 
-    public boolean isFirst_ovner() {
-        return first_ovner;
+    public boolean isFirst_owner() {
+        return first_owner;
     }
 
-    public void setFirst_ovner(boolean first_ovner) {
-        this.first_ovner = first_ovner;
+    public void setFirst_owner(boolean first_ovner) {
+        this.first_owner = first_ovner;
     }
 
     public boolean isAccidents() {

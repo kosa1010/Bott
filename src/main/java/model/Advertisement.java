@@ -1,6 +1,7 @@
 package model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by kosa1010 on 11.12.16.
@@ -11,13 +12,14 @@ public class Advertisement {
     @GeneratedValue
     long id_ad;
     @OneToOne
+    @NotNull
     Car car;
+    @Column(columnDefinition = "TEXT")
     String description;
-    boolean status = false;
+    boolean status;
     String title;
 
-    public Advertisement(long id_ad, Car car, String description, boolean status, String title) {
-        this.id_ad = id_ad;
+    public Advertisement(Car car, String description, boolean status, String title) {
         this.car = car;
         this.description = description;
         this.status = status;

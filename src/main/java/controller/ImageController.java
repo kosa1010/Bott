@@ -1,10 +1,12 @@
 package controller;
 
+import model.Image;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import javax.persistence.EntityManager;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,16 +20,16 @@ import java.util.ArrayList;
  */
 public class ImageController {
     private String pageSource;
-    private final String URL_IMGS;
-    private ArrayList<String> imageLinks;
+    private static String urlImage;
+    private static ArrayList<String> imageLinks = new ArrayList<String>();;
 
     public ImageController(String url) {
-        URL_IMGS = url;
+        urlImage = url;
     }
 
     public ImageController(String pageSource, String url) {
         this.pageSource = pageSource;
-        URL_IMGS = url;
+        urlImage = url;
     }
 
     public String getPageSource() {
@@ -38,17 +40,14 @@ public class ImageController {
         this.pageSource = pageSource;
     }
 
-    public ArrayList<String> getImageLinks() throws IOException {
-        imageLinks = new ArrayList<String>();
-        Connection connect = Jsoup.connect(URL_IMGS).timeout(10 * 1000);
+    public static ArrayList<String> getImageLinks() throws IOException {
+       // imageLinks = new ArrayList<String>();
+        Connection connect = Jsoup.connect(urlImage).timeout(10 * 1000);
         Document document = connect.get();
         Elements all = document.getElementsByClass("om-offer-photos om-offer-photos-slick");
         for (int i = 0; i < 8; i++) {
             if (all.get(0).getElementsByClass("bigImage").attr("data-nr") != null)
                 imageLinks.add(all.get(0).getElementsByClass("photo-item").select("img").get(i).attr("src"));
-        }
-        for (String s : imageLinks) {
-            System.out.println(s);
         }
         return imageLinks;
     }
@@ -60,7 +59,7 @@ public class ImageController {
      * @throws MalformedURLException
      * @throws IOException
      */
-    public byte[] getImageAsByteArray(String url) throws MalformedURLException, IOException {
+    public static byte[] getImageAsByteArray(String url) throws MalformedURLException, IOException {
 
         URL website = new URL(url);
         ReadableByteChannel rbc = Channels.newChannel(website.openStream());
@@ -71,10 +70,33 @@ public class ImageController {
         FileInputStream fis = new FileInputStream(image);
         byte[] bFile = new byte[(int) image.length()];
         fis.read(bFile);
-        for (byte b : bFile) {
-            if (b != 0)
-                System.out.println(b);
-        }
+
         return bFile;
+    }
+
+    /**
+     * Metoda tworzy galerię zdjęć auta
+     *
+     * @param em
+     * @return
+     */
+    public static ArrayList<Image> downloadGallery(EntityManager em) {
+
+        ArrayList<Image> gallery = null;
+        try {
+            ArrayList<String> imgList = getImageLinks();
+            gallery = new ArrayList<Image>();
+            for (int i = 0; i < imgList.size(); i++) {
+                Image img = new Image();
+                img.setImage(getImageAsByteArray(imgList.get(i)));
+                em.getTransaction().begin();
+                em.persist(img);
+                em.getTransaction().commit();
+                gallery.add(img);
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        return gallery;
     }
 }

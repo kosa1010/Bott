@@ -1,6 +1,11 @@
 package controller;
 
+import model.Feature;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kosa1010 on 11.12.16.
@@ -54,4 +59,35 @@ public class FeatureController {
         return s.replace("\"", "");
     }
 
+    /**
+     * Zwraca listę obiektów wyposarzenia samochodu
+     *
+     * @param entityManager
+     * @param features
+     * @return
+     */
+    public List<Feature> getFeatureList(EntityManager entityManager, List<String> features) {
+        List<Feature> carFeatures = new ArrayList();
+        for (String s : features) {
+            Feature feature = new Feature(s);
+            if (!entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().begin();
+            }
+            try {
+                TypedQuery tq = entityManager.createQuery("select f from Feature f " +
+                        "where f.name_feature like :featureName", Feature.class).setParameter("featureName", s);
+                List<Feature> featuree = tq.getResultList();
+                if (featuree.isEmpty()) {
+                    entityManager.persist(feature);
+                    carFeatures.add(feature);
+                } else {
+                    carFeatures.add(featuree.get(0));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            entityManager.getTransaction().commit();
+        }
+        return carFeatures;
     }
+}

@@ -6,12 +6,12 @@
     <persistence-unit name="my_app">
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/SmartMoto?useSSL=false"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/SmartMoto?useSSL=false&amp;useUnicode=yes&amp;characterEncoding=UTF-8"/>
             <property name="javax.persistence.jdbc.user" value="kosa1010"/>
             <property name="javax.persistence.jdbc.password" value="lubieplacki"/>
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
         </properties>
 
     </persistence-unit>
