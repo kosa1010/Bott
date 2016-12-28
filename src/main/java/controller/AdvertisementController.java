@@ -20,9 +20,9 @@ public class AdvertisementController {
 
     public String getDescription(Document document) {
         System.out.println("AdvertisementController.getDescription");
-        Elements all = document.getElementsByAttribute("data-text");
+        Elements all = document.getElementsByAttribute("data-read-more").after("data-text=\"Pokaż pełny opis\"");
         // if (all.get(0).getElementsByClass("bigImage").attr("data-nr") != null)
-        String description = all.get(2).html().toString();//text());//getElementsByClass("photo-item").select("img").get(0).attr("src"));
+        String description = all.get(all.size() - 1).text();//text());//getElementsByClass("photo-item").select("img").get(0).attr("src"));
         return description;
     }
 
