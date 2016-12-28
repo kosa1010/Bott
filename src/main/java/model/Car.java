@@ -34,13 +34,20 @@ public class Car {
     private String color;
     private boolean metalic;
     private String country_of_origin;
-    private Date date_of_first_register;
     private boolean register_in_polish;
     private boolean first_owner;
     private boolean noAccidents;
     private boolean services_in_ASO;
     private boolean used;
+    private String vin;
 
+    public String getVin() {
+        return vin;
+    }
+
+    public void setVin(String vin) {
+        this.vin = vin;
+    }
 
     public long getId_car() {
         return id_car;
@@ -200,14 +207,6 @@ public class Car {
 
     public void setCountry_of_origin(String contry_of_origin) {
         this.country_of_origin = contry_of_origin;
-    }
-
-    public Date getDate_of_first_register() {
-        return date_of_first_register;
-    }
-
-    public void setDate_of_first_register(Date date_of_first_register) {
-        this.date_of_first_register = date_of_first_register;
     }
 
     public boolean isRegister_in_polish() {
