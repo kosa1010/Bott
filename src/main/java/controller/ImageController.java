@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class ImageController {
     private String pageSource;
-    private static ArrayList<String> imageLinks = new ArrayList<String>();
+    private static ArrayList<String> imageLinks;
 
     public ImageController(String pageSource) {
         this.pageSource = pageSource;
@@ -33,10 +33,14 @@ public class ImageController {
     }
 
     public static ArrayList<String> getImageLinks(Document document) {
-        Elements all = document.getElementsByClass("om-offer-photos om-offer-photos-slick");
-        for (int i = 0; i < 8; i++) {
-            if (all.get(0).getElementsByClass("bigImage").attr("data-nr") != null)
-                imageLinks.add(all.get(0).getElementsByClass("photo-item").select("img").get(i).attr("src"));
+        imageLinks = new ArrayList<String>();
+        Elements all = document.getElementsByClass("photo-item");
+        int numPhotos = 8;
+        if (all.size() < 8)
+            numPhotos = all.size();
+        for (int i = 0; i < numPhotos; i++) {
+            //  if (all.get(0).getElementsByClass("bigImage").attr("data-nr") != null)
+            imageLinks.add(all.get(i).select("img").get(0).attr("src"));
         }
         return imageLinks;
     }
