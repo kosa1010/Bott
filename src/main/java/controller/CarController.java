@@ -100,6 +100,8 @@ public class CarController {
             car.setDoor_count(Integer.parseInt(paramsList.get("Liczba drzwi")));
         if (paramsList.containsKey("Kolor"))
             car.setColor(paramsList.get("Kolor"));
+        if (paramsList.containsKey("VIN"))
+            car.setColor(paramsList.get("VIN"));
         if (paramsList.containsKey("Metalik")) {
             if (paramsList.get("Metalik").contains("Tak")) {
                 bufor = true;
