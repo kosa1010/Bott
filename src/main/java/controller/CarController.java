@@ -80,9 +80,9 @@ public class CarController {
         car.setMillage(delLetter(paramsList.get("Przebieg")));
         car.setEngine_capacity((delLetter(paramsList.get("Pojemność skokowa")) / 10));
         car.setFuel_type(paramsList.get("Rodzaj paliwa"));
-        if (paramsList.containsKey("Moc silnika"))
-            car.setEngine_power(delLetter(paramsList.get("Moc silnika")));
-        car.setGearbox(paramsList.get("Skrzynia biagów"));
+        if (paramsList.containsKey("Moc"))
+            car.setEngine_power(delLetter(paramsList.get("Moc")));
+        car.setGearbox(paramsList.get("Skrzynia biegów"));
         if (paramsList.containsKey("Napęd"))
             car.setTransmission(paramsList.get("Napęd"));
         if (paramsList.containsKey("Typ"))
