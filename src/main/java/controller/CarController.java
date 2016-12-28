@@ -101,7 +101,7 @@ public class CarController {
         if (paramsList.containsKey("Kolor"))
             car.setColor(paramsList.get("Kolor"));
         if (paramsList.containsKey("VIN"))
-            car.setColor(paramsList.get("VIN"));
+            car.setVin(paramsList.get("VIN"));
         if (paramsList.containsKey("Metalik")) {
             if (paramsList.get("Metalik").contains("Tak")) {
                 bufor = true;
