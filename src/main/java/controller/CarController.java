@@ -70,26 +70,36 @@ public class CarController {
 
         boolean bufor;
         Car car = new Car();
-        car.setCategory(paramsList.get("Kategoria"));//all.get(1).text());
-        car.setMake(paramsList.get("Marka"));//all.get(2).text());
+        if (paramsList.containsKey("Kategoria"))
+            car.setCategory(paramsList.get("Kategoria"));//all.get(1).text());
+        if (paramsList.containsKey("Marka"))
+            car.setMake(paramsList.get("Marka"));//all.get(2).text());
         if (paramsList.containsKey("Model"))
             car.setModel(paramsList.get("Model"));
         if (paramsList.containsKey("Wersja"))
             car.setVersion(paramsList.get("Wersja"));
-        car.setYear(Integer.parseInt(paramsList.get("Rok produkcji")));
-        car.setMillage(delLetter(paramsList.get("Przebieg")));
-        car.setEngine_capacity((delLetter(paramsList.get("Pojemność skokowa")) / 10));
-        car.setFuel_type(paramsList.get("Rodzaj paliwa"));
+        if (paramsList.containsKey("Rok produkcji"))
+            car.setYear(Integer.parseInt(paramsList.get("Rok produkcji")));
+        if (paramsList.containsKey("Przebieg"))
+            car.setMillage(delLetter(paramsList.get("Przebieg")));
+        if (paramsList.containsKey("Pojemność skokowa"))
+            car.setEngine_capacity((delLetter(paramsList.get("Pojemność skokowa")) / 10));
+        if (paramsList.containsKey("Rodzaj paliwa"))
+            car.setFuel_type(paramsList.get("Rodzaj paliwa"));
         if (paramsList.containsKey("Moc"))
             car.setEngine_power(delLetter(paramsList.get("Moc")));
-        car.setGearbox(paramsList.get("Skrzynia biegów"));
+        if (paramsList.containsKey("Skrzynia biegów"))
+            car.setGearbox(paramsList.get("Skrzynia biegów"));
         if (paramsList.containsKey("Napęd"))
             car.setTransmission(paramsList.get("Napęd"));
         if (paramsList.containsKey("Typ"))
             car.setBody_type(paramsList.get("Typ"));
-        car.setNr_seats(Integer.parseInt(paramsList.get("Liczba miejsc")));
-        car.setDoor_count(Integer.parseInt(paramsList.get("Liczba drzwi")));
-        car.setColor(paramsList.get("Kolor"));
+        if (paramsList.containsKey("Liczba miejsc"))
+            car.setNr_seats(Integer.parseInt(paramsList.get("Liczba miejsc")));
+        if (paramsList.containsKey("Liczba drzwi"))
+            car.setDoor_count(Integer.parseInt(paramsList.get("Liczba drzwi")));
+        if (paramsList.containsKey("Kolor"))
+            car.setColor(paramsList.get("Kolor"));
         if (paramsList.containsKey("Metalik")) {
             if (paramsList.get("Metalik").contains("Tak")) {
                 bufor = true;
