@@ -11,9 +11,7 @@ import org.jsoup.nodes.Document;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -32,51 +30,67 @@ public class Bocik {
         String carDescription;
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("my_app");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        String[] tabNotices = new String[2];
-        tabNotices[0] = "https://www.otomoto.pl/oferta/renault-19-jedyna-taka-stan-kolekcjonerski-65000-z-niemiec-ID6yF3sR.html#a2d6b037dd";
-        tabNotices[1] = "https://www.otomoto.pl/oferta/alfa-romeo-159-rok-2006-2-4-265-km-krakow-zamiana-ID6yFK1J.html#fac044b1a9";
-
-        for (int i = 0; i < 2; i++) {
-            url = tabNotices[i];
-            Connection connect = Jsoup.connect(url).timeout(10 * 1000);
-            Document document = null;
-            try {
-                webPage = getWebPageSource(url);
-                document = connect.get();
-            } catch (IOException e) {
-                System.err.println("zepsuło się");
-            }
-
-            carDescription = getInformation(webPage, "targeting = {", '}');
-            String[] information = cutTheSpecification(carDescription);
-
-            HashMap<String, String> info = changeInfoOnMap(information);
-            CarController cc = new CarController();
-            // Car car = cc.initializeCar(info);
-            Car c = cc.getCar(document);
-
-
-            FeatureController fc = new FeatureController();//info.get("features"));
-            ArrayList<String> features = fc.getFeatures();
-
-            ImageController ic = new ImageController(webPage);
-
-            c.setGallery(ic.downloadGallery(entityManager, document));
-            //c.setFeatures(fc.getFeatureList(entityManager, features));
-            c.setFeatures(fc.getFeaturesList(entityManager, document));
-            entityManager.getTransaction().begin();
-            entityManager.persist(c);
-            entityManager.getTransaction().commit();
-
-            AdvertisementController ac = new AdvertisementController(webPage, url);
-            String description = ac.getDescription(document);
-
-            Advertisement adv = new Advertisement(c, description, false, info.get("title"));
-            entityManager.getTransaction().begin();
-            entityManager.persist(adv);
-            entityManager.getTransaction().commit();
+//        String[] tabNotices = new String[2];
+//        tabNotices[0] = "https://www.otomoto.pl/pl/oferta/renault-19-1-8-karman-automat-104-tys-km-sprowadzona-ID6yHlM9.html#d69f90d623";
+//        tabNotices[1] = "https://www.otomoto.pl/oferta/alfa-romeo-159-rok-2006-2-4-265-km-krakow-zamiana-ID6yFK1J.html#fac044b1a9";
+        BufferedReader in = null;
+        int meny = 1;
+        try {
+            in = new BufferedReader(new FileReader("otomotoCar"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
+        try {
+            while ((url = in.readLine()) != null) {
 
+
+                System.out.println(meny);
+                // for (int i = 0; i < 2; i++) {
+                //  url = tabNotices[i];
+                Connection connect = Jsoup.connect(url).timeout(10 * 1000);
+                Document document = null;
+                try {
+                    webPage = getWebPageSource(url);
+                    document = connect.get();
+                } catch (IOException e) {
+                    System.err.println("zepsuło się");
+                }
+
+                carDescription = getInformation(webPage, "targeting = {", '}');
+                String[] information = cutTheSpecification(carDescription);
+
+                HashMap<String, String> info = changeInfoOnMap(information);
+                CarController cc = new CarController();
+                // Car car = cc.initializeCar(info);
+                Car c = cc.getCar(document);
+
+
+                FeatureController fc = new FeatureController();//info.get("features"));
+//            ArrayList<String> features = fc.getFeatures();
+
+                ImageController ic = new ImageController(webPage);
+
+                c.setGallery(ic.downloadGallery(entityManager, document));
+                //c.setFeatures(fc.getFeatureList(entityManager, features));
+                c.setFeatures(fc.getFeaturesList(entityManager, document));
+                entityManager.getTransaction().begin();
+                entityManager.persist(c);
+                entityManager.getTransaction().commit();
+
+                AdvertisementController ac = new AdvertisementController(webPage, url);
+                String description = ac.getDescription(document);
+
+                Advertisement adv = new Advertisement(c, description, false, info.get("title"));
+                entityManager.getTransaction().begin();
+                entityManager.persist(adv);
+                entityManager.getTransaction().commit();
+                //}
+                meny++;
+            }
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         entityManager.close();
         entityManagerFactory.close();
