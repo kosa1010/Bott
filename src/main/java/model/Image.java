@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 public class Image {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id_image;
     @Lob
     private byte[] image;

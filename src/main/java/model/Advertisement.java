@@ -9,8 +9,8 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Advertisement {
     @Id
-    @GeneratedValue
-    long id_ad;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id_ad;
     @OneToOne
     @NotNull
     Car car;

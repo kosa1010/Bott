@@ -128,12 +128,15 @@ public class CarController {
             }
             car.setServices_in_ASO(bufor);
         }
-        if (paramsList.get("Stan").contains("Używane")) {
-            bufor = true;
-        } else {
-            bufor = false;
+        if (paramsList.containsKey("Stan")) {
+            if (paramsList.get("Stan").contains("Używane")) {
+                bufor = true;
+            } else {
+                bufor = false;
+            }
+            car.setUsed(bufor);
         }
-        car.setUsed(bufor);
+
         String price = document.getElementsByClass("offer-price__number").get(0).text();
         car.setPrice_raw(Double.parseDouble(String.valueOf(delLetter(price))));
         return car;

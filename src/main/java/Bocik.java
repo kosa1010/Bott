@@ -37,6 +37,7 @@ public class Bocik {
         int meny = 1;
         try {
             in = new BufferedReader(new FileReader("otomotoCar"));
+            System.out.println("Tu jestem");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

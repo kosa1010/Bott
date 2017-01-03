@@ -10,8 +10,8 @@
             <property name="javax.persistence.jdbc.user" value="kosa1010"/>
             <property name="javax.persistence.jdbc.password" value="lubieplacki"/>
 
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
         </properties>
 
     </persistence-unit>

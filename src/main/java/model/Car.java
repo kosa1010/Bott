@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 public class Car {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id_car;
     private String category;
     private String make;

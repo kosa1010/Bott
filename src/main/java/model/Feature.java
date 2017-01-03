@@ -1,9 +1,6 @@
 package model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by kosa1010 on 26.11.16.
@@ -11,7 +8,7 @@ import javax.persistence.Id;
 @Entity
 public class Feature {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id_feature;
     @Column(unique = true)
     private String name_feature;
